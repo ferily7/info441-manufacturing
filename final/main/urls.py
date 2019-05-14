@@ -5,7 +5,7 @@ from . import views
 from django.urls import path
 from django.conf.urls import include
 
-url_patterns = [
+urlpatterns = [
     url(r'^brand', 
         views.BrandView.as_view()),
     path('cart/<int:cart_id>', 
