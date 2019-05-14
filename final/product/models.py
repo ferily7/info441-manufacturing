@@ -1,5 +1,5 @@
 from django.db import models
-from auth.models import User
+from django.contrib.auth.models import User
 
 # This creates the product model
 class Product(models.Model):
