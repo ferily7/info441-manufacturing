@@ -1,6 +1,6 @@
 from rest_framework import serializers
 #from auth.serializers import UserSerializer
-#from product.serializers import ProductSerializer
+from product.serializer import ProductSerializer
 from product.models import Product
 from . import models
 
@@ -17,11 +17,11 @@ class BrandSerializer(serializers.ModelSerializer):
         )
 
 class CartSerializer(serializers.ModelSerializer):
-    #products = ProductSerializer(many=True)
+    products = ProductSerializer(many=True)
 
     class Meta:
         model = models.Cart
-        field = (
+        fields = (
             "id",
             "quantity",
             "total_price",
@@ -34,11 +34,11 @@ class CartSerializer(serializers.ModelSerializer):
 class SpecDocSerializer(serializers.ModelSerializer):
     #creator = UserSerializer()
 
-    #product = ProductSerializer()
+    product = ProductSerializer()
 
     class Meta:
         model = models.SpecDoc
-        field = (
+        fields = (
             "id",
             "name",
             "description",

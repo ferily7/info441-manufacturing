@@ -1,9 +1,9 @@
 from rest_framework import serializers
-#from auth.serializers import UserSerializer
+from auth.serializers import UserSerializer
 from . import models
 
 class ProductSerializer(serializers.ModelSerializer):
-    # seller = UserSerializer()
+    seller = UserSerializer()
 
     class Meta: 
         model = models.Product
@@ -35,7 +35,7 @@ class ProductTypeSerializer(serializers.ModelSerializer):
         )
 
 class ReviewSerializer(serializers.ModelSerializer):
-    # reviewer = UserSerializer()
+    reviewer = UserSerializer()
 
     class Meta:
         model = models.Review

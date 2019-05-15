@@ -22,7 +22,7 @@ class SpecDoc(models.Model):
         (CUSTOMER, 'Customer'),
     )
 
-    name = models.CharField(max_length=22, blank=False)
+    name = models.CharField(max_length=100, blank=False)
     description = models.CharField(max_length=250, blank=True)
     creator = models.ForeignKey(
         User, 
