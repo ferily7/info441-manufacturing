@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 # Create your views here.
 
 from rest_framework.views import APIView
@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
 
-from . import models, serializer
+from . import models, serializer, forms
 from product.models import Product
 
 class BrandView(APIView):
@@ -16,9 +16,14 @@ class BrandView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         brands = models.Brand.objects.all()
-        serialized_brands = serializer.BrandSerializer(brands, many=True)
+        serialized_brands = serializer.BrandSerializer(brands, many=True).data
 
-        return Response(serialized_brands.data)
+        return render(request, 
+            'main/brand.html', 
+                {'brand_list':serialized_brands, 
+                'form':forms.BrandForm()
+                }
+            )
 
     def post(self, request):
         #Checks if user is signed in 
@@ -29,7 +34,7 @@ class BrandView(APIView):
 
         if serialized_brand.is_valid():
             serialized_brand.save()
-            return Response(serialized_brand.data, status=status.HTTP_201_CREATED)
+            return redirect('/main/brand/')
         else:
             return Response(serialized_brand.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -92,9 +97,9 @@ class SpecDocView(APIView):
         spec_id = self.kwargs['spec_id']
         spec = models.SpecDoc.objects.get(id=spec_id)
 
-        serialized_spec = serializer.SpecDocSerializer(spec)
+        serialized_spec = serializer.SpecDocSerializer(spec).data
 
-        return Response(serialized_spec.data)
+        return render(request, 'main/spec.html', {'spec':serialized_spec, 'product':serialized_spec['product']})
 
     def patch(self, request, spec_id=0):
         #Checks if user is signed in 
@@ -131,4 +136,4 @@ class AllSpecView(APIView):
         specs = models.SpecDoc.objects.all()
         serialized_specs = serializer.SpecDocSerializer(specs, many=True)
 
-        return Repsonse(serialized_specs.data)
+        return Response(serialized_specs.data)

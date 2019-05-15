@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %} Specs {% endblock %}
+
+{% block content %}
+<h1>{{spec.name}}</h1>
+<h3>{{spec.description}}</h3>
+<h5>{{spec.creator_type}}</h5>
+<hr/>
+<h3>Supported Product:</h3>
+<h7>{{product.name}}</h7>
+<p>{{product.description}}</p>
+<hr/>
+<p>{{spec.content}}</p>
+{% endblock %}
