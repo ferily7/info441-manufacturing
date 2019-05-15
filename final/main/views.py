@@ -10,6 +10,16 @@ from . import models, serializer, forms
 from product.models import Product
 
 class BrandView(APIView):
+    """
+    GET:
+    Returns page with all current brands and a brand registration form
+
+    POST:
+    Creates a new brand instance
+
+    DELETE:
+    Deletes the latest brand
+    """
     def get(self, request, format=None):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
@@ -48,6 +58,16 @@ class BrandView(APIView):
 
         return Response("Latest brand successfully deleted.")
 class CartView(APIView):
+    """
+    GET:
+    Returns all the items in the cart specified
+
+    POST:
+    Adds a new product to the cart specified
+
+    DELETE:
+    Deletes the specified product from the specified cart
+    """
     def get(self, request, cart_id=0):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
@@ -89,6 +109,16 @@ class CartView(APIView):
         return Response("Product successfully deleted.")
 
 class SpecDocView(APIView):
+    """
+    GET:
+    Returns the page of the specified specification doc
+
+    PATCH:
+    Updates the specified spec with new data passed in
+
+    DELETE:
+    Deletes the specifed specification doc
+    """
     def get(self, request, spec_id=0):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
@@ -128,6 +158,10 @@ class SpecDocView(APIView):
         return Response("Deleted Specification Doc. successfully.")
 
 class AllSpecView(APIView):
+    """
+    GET:
+    Returns all of the specification docs
+    """
     def get(self, request, format=None):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
