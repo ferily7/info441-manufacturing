@@ -25,7 +25,7 @@ class Product(models.Model):
 # This creates the review model
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, 
+    reviewer = models.ForeignKey(User, 
         null=True, blank=True, on_delete=models.SET_NULL, related_name="reviewer")
     rating = models.PositiveSmallIntegerField()
     description = models.CharField(max_length=250, blank=True)

@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import Product, ProductType, Review
 
-# Register your models here.
+admin.site.register(Product)
+admin.site.register(ProductType)
+admin.site.register(Review)
