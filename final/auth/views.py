@@ -60,13 +60,10 @@ def register(request):
                                    city=city, state=state, 
                                    zipcode=zipcode)
 
-
-
             return HttpResponseRedirect('/auth/signin')
 
         # User is not registered if form is invalid
-        else :
-
+        else:
             return HttpResponse("Invalid registration request.", status=400)
 
 
@@ -144,11 +141,12 @@ def signout(request):
     # Only GET requests are allowed for signout
     return HttpResponse('Method not allowed on auth/signout.', status=405)
 
-
 class PurchaseView(APIView):
 
     @csrf_exempt
     def get(self, request, format=None, purchase_id=0):
+
+        """ Get the purchase information for the given purchase """
 
         try:
 
@@ -158,13 +156,61 @@ class PurchaseView(APIView):
 
             purchase_id = self.kwargs['purchase_id']
 
-            # Get all purchases and serialize
+            # Get the purchase and serialize
             purchase = models.Purchase.objects.get(id=purchase_id)
+            purchase_serializer = serializers.PurchaseSerializer(purchase)
 
-            # purchases = models.Purchase.objects.all()
-            purchases_serializer = serializers.PurchaseSerializer(purchase)
+            return Response(purchase_serializer.data, status=status.HTTP_200_OK)
 
-            return Response(purchases_serializer.data, status=status.HTTP_200_OK)
+        except:
+
+            return Response('Bad request.',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @csrf_exempt
+    def patch(self, request, format=None, purchase_id=0):
+
+        """ Updates information for the current purchase """
+
+        try:
+            if (not request.user.is_authenticated):
+                return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
+
+            purchase_id = self.kwargs['purchase_id']
+
+            # Get the purchase and serialize
+            purchase = models.Purchase.objects.get(id=purchase_id)
+            purchase_serializer = serializers.PurchaseSerializer(purchase, data=request.data, partial=True)
+
+
+            if purchase_serializer.is_valid():
+
+                purchase_serializer.save()
+                return Response(purchase_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
+                            headers={'Content-Type': 'application/json'})
+
+        except:
+            return Response('Bad request.',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @csrf_exempt
+    def delete(self, request, format=None, purchase_id=0):
+
+        """ Deletes the current purchase """
+        try:
+            if (not request.user.is_authenticated):
+                return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
+
+            purchase_id = self.kwargs['purchase_id']
+
+            # Get the purchase and serialize
+            purchase = models.Purchase.objects.get(id=purchase_id)
+            
+            # Delete the profile from the database
+            purchase.delete()
+
+            return Response('Delete successful.',
+                            status=status.HTTP_204_NO_CONTENT)
 
         except:
 
@@ -176,7 +222,9 @@ class ProfileView(APIView):
     @csrf_exempt
     def get(self, request, format=None, profile_id=0):
 
-        try: 
+        """ Displays additional information for a user profile """
+
+        try:
 
             if (not request.user.is_authenticated):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
@@ -198,7 +246,7 @@ class ProfileView(APIView):
     @csrf_exempt
     def patch(self, request, format=None, profile_id=0):
 
-        """ Updates the name and/or description of the current channel """
+        """ Updates information for the user profile """
 
         try:
 
@@ -251,6 +299,5 @@ class ProfileView(APIView):
                             status=status.HTTP_204_NO_CONTENT)
 
         except:
-
             return Response('Bad request.',
                             status=status.HTTP_400_BAD_REQUEST)
