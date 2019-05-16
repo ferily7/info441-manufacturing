@@ -24,7 +24,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
                   'product_id',
                   'total_price',
                   'total_items')
-        read_only_fields = ('id')
+        # read_only_fields = ('id')
 
 class ProfileSerializer(serializers.ModelSerializer):
 
