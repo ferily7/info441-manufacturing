@@ -1,7 +1,6 @@
 # info441-manufacturing
 
 ## Brands
-
 Creates a new brand in a form
 
 POST:
@@ -11,12 +10,12 @@ POST:
   'description':'description'
 }
 ```
-Response -> HTTP_200
 
 ## Carts
+Add the specified product to the cart
 
 POST:
-Add the specified product to the cart
+
 ```
 {
   'name':'product_name',
@@ -27,9 +26,9 @@ Add the specified product to the cart
   'seller':1
 }
 ```
+Remove the specified product from the cart
+
 DELETE:
-Deletes the specified 
-Remove the specified product to the cart
 ```
 {
   'name':'product_name',
@@ -43,6 +42,7 @@ Remove the specified product to the cart
 
 ## Spec docs
 Edit specifications
+
 PATCH:
 ```
 {
@@ -54,6 +54,7 @@ PATCH:
   'content': ""
 }
 ```
+
 ## Users
 Create new user account
 
@@ -71,6 +72,7 @@ POST:
   'zipcode':98105
 }
 ```
+
 ## Profiles
 Edit user profile
 
@@ -106,6 +108,7 @@ POST:
   'description':'product_type_description',
 }
 ```
+
 ## Products
 Edit product name, description, quantity, and price 
 
@@ -118,6 +121,7 @@ PATCH:
   'price':30
 }
 ```
+
 ## Reviews
 Edit review score and description
 
