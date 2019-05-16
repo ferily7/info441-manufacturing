@@ -12,7 +12,7 @@ class ProductHomePage(APIView):
         allProducts = models.Product.objects.all()
         allSerializer = serializer.ProductSerializer(allProducts, many=True)
 
-        return render(request, 'productHome.html', {'products': allSerializer.data})
+        return render(request, 'product/productHome.html', {'products': allSerializer.data})
 
 class ProductView(APIView):
     def get(self, request, format=None, product_id=0):
@@ -32,7 +32,7 @@ class ProductView(APIView):
         productSerializer = serializer.ProductSerializer(product)
 
         # return Response(productSerializer.data)
-        return render(request, 'product.html', {'product': productSerializer.data})
+        return render(request, 'product/product.html', {'product': productSerializer.data})
 
 
     def patch(self, request, format=None, product_id=0):
@@ -79,7 +79,8 @@ class ProductTypeView(APIView):
         # This gets all of the users who is registered
         allProductType = models.ProductType.objects.all()
         allSerializer = serializer.ProductTypeSerializer(allProductType, many=True)
-        return Response(allSerializer.data)
+
+        return render(request, 'product/productType.html', {'type': allSerializer.data})
 
     def post(self, request, format=None):
         """ This creates a new product type based on name and description """
@@ -123,7 +124,7 @@ class ReviewView(APIView):
 
         reviewSerializer = serializer.ReviewSerializer(review)
 
-        return Response(reviewSerializer.data)
+        return render(request, 'product/review.html', {'review': reviewSerializer.data})
 
     def patch(self, request, format=None, review_id=0):
         """ This updates the review's rating or description if the user is the creator of 
