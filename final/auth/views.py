@@ -17,7 +17,6 @@ from .models import Profile
 def register(request):
 
     """ Registers a new user in the database"""
-
     if (request.method == 'GET'):
          # Display empty form
         form = RegistrationForm()
@@ -26,12 +25,10 @@ def register(request):
 
     # If user submits the form
     elif (request.method == 'POST'):
-
         # Get user input from form
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-
             # Get user information from form
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -43,7 +40,6 @@ def register(request):
             state = form.cleaned_data['state']
             zipcode = form.cleaned_data['zipcode']
 
-
             # Return error if password and password confirmation do not match
             if (password != passwordconf):
 
@@ -52,7 +48,7 @@ def register(request):
             # Register user
             new_user = User.objects.create_user(username=username, password=password, email=email)
 
-            print(new_user.id)
+            # print(new_user.id)
 
             Profile.objects.create(account_type=account_type,
                                    user=new_user, 
