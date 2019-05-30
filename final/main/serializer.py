@@ -1,5 +1,5 @@
 from rest_framework import serializers
-#from auth.serializers import UserSerializer
+from auth.serializers import UserSerializer
 from product.serializer import ProductSerializer
 from product.models import Product
 from . import models
@@ -18,21 +18,22 @@ class BrandSerializer(serializers.ModelSerializer):
 
 class CartSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True)
-
+    buyer = UserSerializer()
     class Meta:
         model = models.Cart
         fields = (
             "id",
             "quantity",
             "total_price",
-            "products"
+            "products",
+            "buyer"
         )
         read_only_fields = (
             "id",
         )
 
 class SpecDocSerializer(serializers.ModelSerializer):
-    #creator = UserSerializer()
+    creator = UserSerializer()
 
     product = ProductSerializer()
 

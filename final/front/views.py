@@ -2,7 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 def homepage(request):
-	return render(request, "index.html", {})
+	content = {}
+	if request.user.is_authenticated:
+		content = {'user':request.user}
+
+	return render(request, "index.html", content)
 
 def loginpage(request):
 	return render(request, "auth/signin.html", {})

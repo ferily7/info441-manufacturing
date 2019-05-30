@@ -11,6 +11,17 @@ class Cart(models.Model):
     total_price = models.DecimalField(max_digits=7, decimal_places=2)
     products = models.ManyToManyField(Product, 
         verbose_name="List of products", blank=True)
+    buyer = models.ForeignKey(
+        User, 
+        null=True, 
+        blank=True, 
+        on_delete=models.SET_NULL, 
+        related_name='buyer')
+        
+    def save_model(self, request, obj, form, change):
+        obj.added_by = request.user
+        super().save_model(request, obj, form, change)
+
 class SpecDoc(models.Model):
     MANUFACTURER = 'MN'
     SELLER = 'SL'

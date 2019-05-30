@@ -1,7 +1,8 @@
 from rest_framework import serializers
-from . import models
 from django.contrib.auth.models import User
-# from product.serializers import ProductSerializer
+# from product.serializer import ProductSerializer
+from . import models
+
  
 
 class UserSerializer(serializers.ModelSerializer):
@@ -16,6 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
 class PurchaseSerializer(serializers.ModelSerializer):
 
     user_id = UserSerializer()
+    # products = ProductSerializer()
 
     class Meta:
         model = models.Purchase

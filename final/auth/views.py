@@ -265,9 +265,10 @@ class ProfileView(APIView):
 
             profile = models.Profile.objects.get(user=user)
 
-            profile_serializer = serializers.ProfileSerializer(profile)
+            profile_serializer = serializers.ProfileSerializer(profile).data
 
-            return Response(profile_serializer.data, status=status.HTTP_200_OK)
+            return render(request, 'auth/profile.html', {'profile': profile_serializer})
+            # return Response(profile_serializer.data, status=status.HTTP_200_OK)
 
         except:
             return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)

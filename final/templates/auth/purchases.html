@@ -6,7 +6,9 @@
 
 {% for purchase in purchases %}
 
-<h2>{{purchase.product}}</h2>
+<h1>Purchase History</h1>
+
+<h2>{{purchase.product.name}}</h2>
 
 <p>Total Items: {{purchase.total_items}}</p>
 <p>Total Price: {{purchase.total_price}}</p>

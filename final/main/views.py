@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User
 # Create your views here.
 
 from rest_framework.views import APIView
@@ -68,43 +69,50 @@ class CartView(APIView):
     DELETE:
     Deletes the specified product from the specified cart
     """
-    def get(self, request, cart_id=0):
+    def get(self, request, user_id=0):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        cart_id = self.kwargs['cart_id']
-        cart = models.Cart.objects.get(id=cart_id)
+        user_id = self.kwargs['user_id']
+        user = User.objects.get(id=user_id)
+        try:
+            user_cart = models.Cart.objects.get(buyer=user)
+        except models.Cart.DoesNotExist:
+            user_cart = None
+        
+        user_cart_serialized = serializer.CartSerializer(user_cart).data
+        products = user_cart_serialized['products']
 
-        serialized_cart = serializer.CartSerializer(cart)
+        return render(request, 'main/cart.html', {'products':products})
 
-        return Response(serialized_cart.data)
-
-    def post(self, request, cart_id=0):
+    def post(self, request, user_id=0):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        cart_id = self.kwargs['cart_id']
-        cart = models.Cart.objects.get(id=cart_id)
+        user_id = self.kwargs['user_id']
+        user = User.objects.get(id=user_id)
+        user_cart = models.Cart.objects.get(buyer=user)
 
         product = Product.objects.get(id=request.data['id'])
         
-        cart.products.add(product)
-        cart.save()
+        user_cart.products.add(product)
+        user_cart.save()
 
         return Response("Product successfully added to cart.")
 
-    def delete(self, request, cart_id=0):
+    def delete(self, request, user_id=0):
         #Checks if user is signed in 
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-        cart_id = self.kwargs['cart_id']
-        cart = models.Cart.objects.get(id=cart_id)
+        user_id = self.kwargs['user_id']
+        user = User.objects.get(id=user_id)
+        user_cart = models.Cart.objects.get(buyer=user)
 
-        cart.products.remove(request.data)
-        cart.save()
+        user_cart.products.remove(request.data)
+        user_cart.save()
 
         return Response("Product successfully deleted.")
 
