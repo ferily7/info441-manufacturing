@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %} Purchases {% endblock %}
+
+{% block content %}
+
+{% for purchase in purchases %}
+
+<h1>Purchase History</h1>
+
+<h2>{{purchase.product.name}}</h2>
+
+<p>Total Items: {{purchase.total_items}}</p>
+<p>Total Price: {{purchase.total_price}}</p>
+{% endfor %}
+
+{% endblock %}
