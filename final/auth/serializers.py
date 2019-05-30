@@ -21,7 +21,7 @@ class PurchaseSerializer(serializers.ModelSerializer):
         model = models.Purchase
         fields = ('id',
                   'user_id',
-                  'product_id',
+                  'products',
                   'total_price',
                   'total_items')
         # read_only_fields = ('id')
