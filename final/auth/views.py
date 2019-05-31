@@ -251,11 +251,8 @@ class ProfileView(APIView):
     def get(self, request, format=None):
     # def get(self, request, format=None, profile_id=0):
 
-
         """ Displays additional information for a user profile """
-
         try:
-
             if (not request.user.is_authenticated):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
@@ -273,6 +270,17 @@ class ProfileView(APIView):
         except:
             return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
 
+    @csrf_exempt
+    def post(self, request, format=None):
+
+        try:
+            if (not request.user.is_authenticated):
+                return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
+
+        except:
+            return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
+
+
 
     @csrf_exempt
     def patch(self, request, format=None, profile_id=0):
@@ -282,7 +290,6 @@ class ProfileView(APIView):
         try:
 
             if (not request.user.is_authenticated):
-
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
             profile_id = self.kwargs['profile_id']
