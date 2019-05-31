@@ -12,7 +12,7 @@ class ProductHomePage(APIView):
         allProducts = models.Product.objects.all()
         allSerializer = serializer.ProductSerializer(allProducts, many=True)
 
-        return render(request, 'product/productHome.html', {'products': allSerializer.data})
+        return render(request, 'product/productHome.html', {'products': allSerializer.data, 'user_id': request.user.id})
 
 class ProductView(APIView):
     def get(self, request, format=None, product_id=0):
