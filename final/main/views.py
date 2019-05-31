@@ -84,7 +84,9 @@ class CartView(APIView):
         user_cart_serialized = serializer.CartSerializer(user_cart).data
         products = user_cart_serialized['products']
 
-        return render(request, 'main/cart.html', {'products':products})
+        return render(request,
+            'main/cart.html', 
+            {'cart':user_cart_serialized,'products':products})
 
     def post(self, request, user_id=0):
         #Checks if user is signed in 
@@ -95,7 +97,8 @@ class CartView(APIView):
         user = User.objects.get(id=user_id)
         user_cart = models.Cart.objects.get(buyer=user)
 
-        product = Product.objects.get(id=request.data['id'])
+        product_id = request.POST.get('product_id')
+        product = Product.objects.get(id=product_id)
         
         user_cart.products.add(product)
         user_cart.save()
