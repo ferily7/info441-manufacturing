@@ -60,7 +60,11 @@
             <div class="totals-value" id="cart-total">90.57</div>
         </div>
     </div>
-    <button class="checkout">Checkout</button>
+    <form method="POST" action="auth/purchases/">
+        {% csrf_token %}
+        <button type="submit" class="checkout">Checkout</button>
+        <input type="hidden" name='cart_id' value='{{ cart.id }}'>
+    </form>
 </div>
 
 {% endblock %}

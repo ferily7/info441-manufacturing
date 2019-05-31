@@ -15,7 +15,8 @@ class Profile(models.Model):
 class Purchase(models.Model):
     id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    product_id = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    # product_id = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    products = models.ManyToManyField(Product, related_name='all_products', blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=2)
     total_items = models.PositiveSmallIntegerField()
 
