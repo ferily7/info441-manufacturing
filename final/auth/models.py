@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from product.models import Product
 
 class Profile(models.Model):
-    
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     account_type = models.CharField(max_length=2, default='BU')
     street_address = models.CharField(max_length=100, default='123 University Way')
@@ -23,6 +22,3 @@ class Purchase(models.Model):
     # def save_model(self, request, obj, form, change):
     #     obj.added_by = request.user
     #     super().save_model(request, obj, form, change)
-
-
-

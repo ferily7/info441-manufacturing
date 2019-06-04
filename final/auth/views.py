@@ -11,7 +11,9 @@ from rest_framework.response import Response
 from . import serializers, models
 from rest_framework import status
 
-from .models import Profile
+from .models import Profile, Purchase
+from main.serializer import CartSerializer
+from main.models import Cart
 
 @csrf_exempt
 def register(request):
@@ -20,7 +22,6 @@ def register(request):
     if (request.method == 'GET'):
          # Display empty form
         form = RegistrationForm()
-
         return render(request, 'auth/register.html', {'form':form}, status=200)
 
     # If user submits the form
@@ -42,18 +43,14 @@ def register(request):
 
             # Return error if password and password confirmation do not match
             if (password != passwordconf):
-
                 return HttpResponse("Passwords did not match.", status=400)
 
             # Register user
             new_user = User.objects.create_user(username=username, password=password, email=email)
-
-            # print(new_user.id)
-
             Profile.objects.create(account_type=account_type,
-                                   user=new_user, 
+                                   user=new_user,
                                    street_address=street_address,
-                                   city=city, state=state, 
+                                   city=city, state=state,
                                    zipcode=zipcode)
 
             return HttpResponseRedirect('/auth/signin')
@@ -118,108 +115,61 @@ def signin(request):
 @csrf_exempt
 @sensitive_post_parameters()
 def signout(request):
-
     """Renders a signout page and signs out the current user"""
-
     if (request.method == 'GET'):
-
         # User cannot be logged out if not authenticated
         if (not request.user.is_authenticated):
-
             return HttpResponse('Not logged in.', status=200)
-
         # Log out the user
         else:
-
             logout(request)
-
-            # return HttpResponse('Sign out successful.', status=200)
             return render(request, 'index.html', {})
-
 
     # Only GET requests are allowed for signout
     return HttpResponse('Method not allowed on auth/signout.', status=405)
 
 class PurchaseView(APIView):
-
-    # @csrf_exempt
-    # def get(self, request, format=None, purchase_id=0):
-
-    #     """ Get the purchase information for the given purchase """
-
-    #     try:
-
-    #         if (not request.user.is_authenticated):
-
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #         purchase_id = self.kwargs['purchase_id']
-
-    #         # Get the purchase and serialize
-    #         purchase = models.Purchase.objects.get(id=purchase_id)
-    #         purchase_serializer = serializers.PurchaseSerializer(purchase)
-
-    #         return Response(purchase_serializer.data, status=status.HTTP_200_OK)
-
-    #     except:
-
-    #         return Response('Bad request.',
-    #                         status=status.HTTP_400_BAD_REQUEST)
-
     @csrf_exempt
     # def get(self, request, format=None, purchase_id=0):
     def get(self, request, format=None):
-
-
         """ Get the purchase information for the given purchase """
-        # try:
         if (not request.user.is_authenticated):
             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
-        # purchase_id = self.kwargs['purchase_id']
-
         # Get the purchase and serialize
-        # purchase = models.Purchase.objects.get(id=purchase_id)
-
         purchase = models.Purchase.objects.all().filter(user_id=request.user.id)
-
-
         purchase_serializer = serializers.PurchaseSerializer(purchase, many=True).data
-
-        # return Response('pass', status=status.HTTP_200_OK, headers={'Content-Type': 'application/json'})
 
         return render(request, 'auth/purchases.html', {'purchases': purchase_serializer})
             #return Response(purchase_serializer, status=status.HTTP_200_OK, headers={'Content-Type': 'application/json'})
 
-        # except:
+    @csrf_exempt
+    def post(self, request, format=None):
+        # """ Updates information for the current purchase """
+        if (not request.user.is_authenticated):
+            return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
-        #     return Response('Bad request.',
-        #                     status=status.HTTP_400_BAD_REQUEST)
+        # Get items in cart
+        cart_id = request.POST.get('cart_id')
+        cart = Cart.objects.get(id=cart_id)
+        cart_serializer = CartSerializer(cart).data
+        user = User.objects.get(id=cart_serializer['buyer']['id'])
+        # Create new purchase
+        new_purchase = Purchase.objects.create(user_id=user,
+                                total_price=cart_serializer['total_price'],
+                                total_items=1)
+        #new_purchase.products.set(cart['products'])
+        new_purchase.save()
+        # Get the purchase and serialize
+        # purchase = models.Purchase.objects.get(id=purchase_id)
+        # purchase_serializer = serializers.PurchaseSerializer(purchase, data=request.data, partial=True)
 
+        # if purchase_serializer.is_valid():
+        #     purchase_serializer.save()
+        #     return Response(purchase_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
+        #                 headers={'Content-Type': 'application/json'})
 
-    # @csrf_exempt
-    # def patch(self, request, format=None, purchase_id=0):
-
-    #     """ Updates information for the current purchase """
-
-    #     try:
-    #         if (not request.user.is_authenticated):
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #         purchase_id = self.kwargs['purchase_id']
-
-    #         # Get the purchase and serialize
-    #         purchase = models.Purchase.objects.get(id=purchase_id)
-    #         purchase_serializer = serializers.PurchaseSerializer(purchase, data=request.data, partial=True)
-
-    #         if purchase_serializer.is_valid():
-    #             purchase_serializer.save()
-    #             return Response(purchase_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
-    #                         headers={'Content-Type': 'application/json'})
-
-    #     except:
-    #         return Response('Bad request.',
-    #                         status=status.HTTP_400_BAD_REQUEST)
+        return HttpResponseRedirect('/auth/purchases')
 
     # @csrf_exempt
     # def delete(self, request, format=None, purchase_id=0):
@@ -293,15 +243,12 @@ class ProfileView(APIView):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
             profile_id = self.kwargs['profile_id']
-
             user = User.objects.get(id=profile_id)
 
             profile = models.Profile.objects.get(user=user)
-
             profile_serializer = serializers.ProfileSerializer(profile, data=request.data, partial=True)
 
             if profile_serializer.is_valid():
-
                 profile_serializer.save()
                 return Response(profile_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
                             headers={'Content-Type': 'application/json'})
@@ -310,11 +257,9 @@ class ProfileView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         except:
-            
             return Response('Bad request.',
                             status=status.HTTP_400_BAD_REQUEST)
 
-    
     @csrf_exempt
     def delete(self, request, format=None, profile_id=0):
 
@@ -324,11 +269,8 @@ class ProfileView(APIView):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
             profile_id = self.kwargs['profile_id']
-
             user = User.objects.get(id=profile_id)
-
             profile = models.Profile.objects.get(user=user)
-
             
             # Delete the profile from the database
             profile.delete()

@@ -18,7 +18,7 @@ class ProductSerializer(serializers.ModelSerializer):
     seller = UserSerializer()
     product_type = ProductTypeSerializer()
 
-    class Meta: 
+    class Meta:
         model = models.Product
         fields = (
             "id",
