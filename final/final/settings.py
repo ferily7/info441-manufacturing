@@ -25,7 +25,10 @@ SECRET_KEY = 'n@w*@#7_3x6bxv5*(3rzg)hmy^k%bo1&zmt#7n3v8te715%!_i'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    'info441.azurewebsites.net', # Name of website when deploy on Azure
+	'127.0.0.1']
 
 
 # Application definition
