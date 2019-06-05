@@ -7,8 +7,8 @@ class Brand(models.Model):
     name = models.CharField(max_length=22, blank=False)
     description = models.CharField(max_length=250)
 class Cart(models.Model):
-    quantity = models.PositiveSmallIntegerField()
-    total_price = models.DecimalField(max_digits=7, decimal_places=2)
+    quantity = models.PositiveSmallIntegerField(blank=True)
+    total_price = models.DecimalField(max_digits=7, decimal_places=2, blank=True)
     products = models.ManyToManyField(Product, 
         verbose_name="List of products", blank=True)
     buyer = models.ForeignKey(

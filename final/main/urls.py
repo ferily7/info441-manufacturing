@@ -13,4 +13,5 @@ urlpatterns = [
     path('spec/<int:spec_id>', 
         views.SpecDocView.as_view(), name='spec_id'),
     url(r'^spec', views.AllSpecView.as_view()),
+    url(r'^cart', views.CreateCartView.as_view()),
 ]
