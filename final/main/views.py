@@ -182,3 +182,14 @@ class AllSpecView(APIView):
         serialized_specs = serializer.SpecDocSerializer(specs, many=True)
 
         return Response(serialized_specs.data)
+
+class CreateCartView(APIView):
+    """
+    POST:
+    Create a new cart for current user
+    """
+    def post(self, request):
+        cart = serializer.CartSerializer(data={'buyer':request.user['id']})
+        if(cart.is_valid()):
+            cart.save()
+        return Response(cart.error, status=status.HTTP_400_BAD_REQUEST)
