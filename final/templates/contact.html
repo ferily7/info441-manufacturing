@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %} Contact Us {% endblock %}
+
+{% block content %}
+
+<h1>Contact Us</h1>
+
+
+<p>
+    Customer feedback is greatly appreciated. Please let us know if you have any questions or concerns.
+</p>
+
+<form method='POST', action='contact'>
+    Phone: <input type='text' name='phone'><br><br>
+    Email: <input type='text' name='email'><br><br>
+    Feedback: <br>
+    <textarea rows='5' cols='80'></textarea><br><br>
+    <input type='submit' value='Submit'>
+</form>
+
+
+    <!-- <h2>Hello, {{profile.user.username}}!</h2>
+
+<p>Username: {{profile.user.username}}</p>
+<p>Email: {{profile.user.email}}</p>
+<p>Account Type: {{profile.account_type}}</p>
+<p>Street Address: {{profile.street_address}}</p>
+<p>City: {{profile.city}}</p>
+<p>State: {{profile.state}}</p>
+<p>Zipcode: {{profile.zipcode}}</p>
+
+<form method='POST', action='../auth/profile'>
+    {% csrf_token %}
+    <button type='submit' class='btn btn-info' name='delete'>Delete Account</button>
+</form> -->
+
+{% endblock %}

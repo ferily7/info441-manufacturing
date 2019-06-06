@@ -18,7 +18,3 @@ class Purchase(models.Model):
     products = models.ManyToManyField(Product, related_name='all_products', blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=2)
     total_items = models.PositiveSmallIntegerField()
-
-    # def save_model(self, request, obj, form, change):
-    #     obj.added_by = request.user
-    #     super().save_model(request, obj, form, change)
