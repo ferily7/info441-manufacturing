@@ -49,10 +49,6 @@ def register(request):
                 messages.error(request, 'Passwords did not match.')
                 return HttpResponseRedirect('register')
 
-            # if (User.objects.get(username=username) is not None):
-            #     messages.error(request, 'Username already taken.')
-            #     return HttpResponseRedirect('register')
-
             try:
                 User.objects.get(username=username)
                 messages.error(request, 'Username already taken.')
