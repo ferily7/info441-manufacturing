@@ -161,10 +161,8 @@ class PurchaseView(APIView):
         new_purchase = Purchase.objects.create(user_id=user,
                                 # products=cart_serializer['products'],
                                 total_price=cart_serializer['total_price'],
-                                total_items=1)
+                                total_items=cart_serializer['quantity'])
         for product in cart_serializer['products']:
-            print(product)
-            # print(product.data)
             # product_serializer = ProductSerializer(product)
             product_object = Product.objects.get(name=product['name'])
             
@@ -200,22 +198,17 @@ class ProfileView(APIView):
 
     @csrf_exempt
     def get(self, request, format=None):
-    # def get(self, request, format=None, profile_id=0):
-
         """ Displays additional information for a user profile """
         try:
             if (not request.user.is_authenticated):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
-            # profile_id = self.kwargs['profile_id']
 
             user = User.objects.get(id=request.user.id)
-
             profile = models.Profile.objects.get(user=user)
             profile_serializer = serializers.ProfileSerializer(profile).data
 
             return render(request, 'auth/profile.html', {'profile': profile_serializer})
-            # return Response(profile_serializer.data, status=status.HTTP_200_OK)
 
         except:
             return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
@@ -234,9 +227,7 @@ class ProfileView(APIView):
 
     @csrf_exempt
     def patch(self, request, format=None, profile_id=0):
-
         """ Updates information for the user profile """
-
         try:
             if (not request.user.is_authenticated):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)

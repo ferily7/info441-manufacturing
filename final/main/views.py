@@ -160,7 +160,7 @@ class CartView(APIView):
             newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=1)
             user_cart.save()
             newProduct.save()
-        return redirect('/main/cart/' + str)
+        return redirect('/main/cart/' + str(user_id))
 
     def patch(self, request, user_id=0):
         #Checks if user is signed in 
