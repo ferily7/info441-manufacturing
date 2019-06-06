@@ -56,3 +56,18 @@ class SpecDocSerializer(serializers.ModelSerializer):
             "creator_type",
             "product",
         )
+
+class ProductCartSerializer(serializers.ModelSerializer):
+    product_id = ProductSerializer()
+    
+    #cart_id = CartSerializer()
+    class Meta:
+        model = models.ProductCart
+        fields = (
+            "id",
+            "product_id",
+            "quantity"
+        )
+        read_only_fields = (
+            "id",
+        )
