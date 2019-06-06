@@ -7,15 +7,21 @@ class ProductType(models.Model):
     name = models.CharField(max_length=100, blank=False, unique=True)
     description = models.CharField(max_length=250, blank=True)
 
+# This creates the brand model
+class Brand(models.Model):
+    name = models.CharField(max_length=22, blank=False)
+    description = models.CharField(max_length=250)
+
 # This creates the product model
 class Product(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, blank=False, unique=True)
     description = models.CharField(max_length=250, blank=True)
-    quantity = models.PositiveSmallIntegerField()
     stock = models.PositiveSmallIntegerField()
     price = models.DecimalField(max_digits=7, decimal_places=2)
     product_type = models.ManyToManyField(ProductType, related_name="product_type", blank=True)
+    brand = models.ForeignKey(Brand, 
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="brand")
     seller = models.ForeignKey(User, 
         null=True, blank=True, on_delete=models.SET_NULL, related_name="seller")
 
@@ -28,6 +34,8 @@ class Review(models.Model):
     id = models.AutoField(primary_key=True)
     reviewer = models.ForeignKey(User, 
         null=True, blank=True, on_delete=models.SET_NULL, related_name="reviewer")
+    product = models.ForeignKey(Product, 
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="review_product")
     rating = models.PositiveSmallIntegerField()
     description = models.CharField(max_length=250, blank=True)
 

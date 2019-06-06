@@ -4,22 +4,28 @@
 
 {% block content %}
 
-<h1> This is the Product page. </h1>
-<br>
-
 {% for product in products %}
     <form method="POST", action="../main/cart/{{ user_id }}">
         {% csrf_token %}
         <h4>Product Name: {{product.name}}</h4>
         <p>Description: {{product.description}}</p>
-        <!-- <p>Quantity: {{product.quantity}}</p> -->
         <p>Price: ${{product.price}}</p>
         <p>Product Type: {{product.product_type.name}}</p>
+        <p>Brand: {{product.brand.name}}</p>
         <p>Seller: {{product.seller.username}}</p>
         
-        <button type="submit" class="btn btn-info" name="add">Add To Cart</button>
+        <button type="submit" class="btn btn-success" name="add">Add To Cart</button>
         <input type="hidden" name='product_id' value='{{ product.id }}'>
      </form>
+
+    <form method="GET", action="reviews/{{product.id}}">
+        <button type="submit" class="btn btn-info" name="add">Review</button>
+    </form>
+
+    <!-- <form method="GET", action="main/spec/{{ product.id }}">
+        <button type="submit" class="btn btn-warning" name="add">Spec</button>
+    </form> -->
+
     <br>
     <br>
 {% endfor %}

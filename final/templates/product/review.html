@@ -4,10 +4,22 @@
 
 {% block content %}
 
-<h2>Review</h2>
+<h2>Reviews</h2>
 
-<p>User: {{review.reviewer.username}}</p>
-<p>Rating: {{review.rating}}</p>
-<p>Description: {{review.description}}</p>
+{% for review in review %}
+    <p>User: {{review.reviewer.username}}</p>
+    <p>Product: {{review.product.name}}</p>
+    <p>Rating: {{review.rating}}</p>
+    <p>Description: {{review.description}}</p>
+    <br>
+{% endfor %}
+
+<h3>Write a Review</h3>
+
+<form action='/product/reviews/{{product_id}}' method='POST'>
+    {% csrf_token %}
+    {{form.as_ul}}
+    <input type='submit' value='Submit'>
+</form>
 
 {% endblock %}

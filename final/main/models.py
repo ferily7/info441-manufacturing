@@ -3,9 +3,6 @@ from django.contrib.auth.models import User
 from product.models import Product
 
 # Create your models here.
-class Brand(models.Model):
-    name = models.CharField(max_length=22, blank=False)
-    description = models.CharField(max_length=250)
 class Cart(models.Model):
     quantity = models.PositiveSmallIntegerField(blank=True)
     total_price = models.DecimalField(max_digits=7, decimal_places=2, blank=True)
