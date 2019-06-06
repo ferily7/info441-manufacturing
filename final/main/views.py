@@ -102,10 +102,12 @@ class CartView(APIView):
         products = user_cart_serialized['products']
 
         index = 0
+        total_items = 0
         for product in products:
             product['num'] = cart_contents_serialized[index]['quantity']
             product['total_price'] = product['price'] * product['num']
             index += 1
+            total_items += product['num']
 
         subtotal = 0
         for product in products:
@@ -120,8 +122,14 @@ class CartView(APIView):
         shipping = format(5.00, '.2f')
 
         grandTotal = float(subtotal) + float(tax) + float(shipping)
+
+        user_cart.total_price = grandTotal
+        user_cart.quantity = total_items
+        user_cart.save()
         
         grandTotal = format(grandTotal, '.2f')
+
+       
 
         return render(request,
             'main/cart.html', 
@@ -149,8 +157,8 @@ class CartView(APIView):
         product = Product.objects.get(id=product_id)
         serialized_product = ProductSerializer(product)
 
-        if(product in products):
-            currProduct = models.ProductCart.objects.get(cart_id=user_cart['id'])
+        if(serialized_product in products):
+            currProduct = models.ProductCart.objects.get(cart_id=user_cart, product_id=product)
             quantity = currProduct['quantity'] + 1
             newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=quantity)
             currProduct.delete()
@@ -160,7 +168,7 @@ class CartView(APIView):
             newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=1)
             user_cart.save()
             newProduct.save()
-        return redirect('/main/cart/' + str)
+        return redirect('/main/cart/' + str(user_id))
 
     def patch(self, request, user_id=0):
         #Checks if user is signed in 
@@ -273,7 +281,7 @@ class CreateCartView(APIView):
     def post(self, request):
         if not request.user.is_authenticated:
             return redirect('/auth/signin')
-            
+
         cart = serializer.CartSerializer(data={'buyer':request.user['id']})
         if(cart.is_valid()):
             cart.save()
