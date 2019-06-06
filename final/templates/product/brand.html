@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Brands {% endblock %}
+
+{% block content %}
+
+<h1>Brands</h1>
+
+{% for brand in brand_list %}
+    <h3>{{brand.name}}</h3>
+    <p>{{brand.description}}</p>
+{% endfor %}
+<hr/>
+
+{% if not isBuyer %}
+    <h1>Register a new brand</h1>
+    <form action='/product/brand/' method='POST'>
+        {% csrf_token %}
+        {{form.as_ul}}
+        <input type='submit' value='Submit'>
+    </form>
+    <hr/>
+{% endif %}
+
+{% endblock %}
