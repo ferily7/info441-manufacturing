@@ -197,7 +197,7 @@ class CartView(APIView):
         user_cart.save()
 
         messages.success(request, 'Item has been removed.')
-        return redirect('/main/cart/' + user_id)
+        return redirect('/main/cart/' + str(user_id))
 
 class SpecDocView(APIView):
     """
