@@ -93,23 +93,25 @@ class CartView(APIView):
         user_id = self.kwargs['user_id']
         user = User.objects.get(id=user_id)
         user_cart = models.Cart.objects.get(buyer=user)
+        user_cart_serialized = serializer.CartSerializer(user_cart).data
+        products = user_cart_serialized['products']
 
         product_id = request.POST.get('product_id')
         product = Product.objects.get(id=product_id)
         serialized_product = ProductSerializer(product)
 
-        if(product in user_cart['products']):
+        if(product in products):
             currProduct = models.ProductCart.objects.get(cart_id=user_cart['id'])
             quantity = currProduct['quantity'] + 1
-            newProduct = models.ProductCart(cart_id=user_cart['id'], product_id=product_id, quantity=quantity)
+            newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=quantity)
             currProduct.delete()
             newProduct.save()
         else:
             user_cart.products.add(product)
-            newProduct = models.ProductCart(cart_id=user_cart['id'], product_id=product_id, quantity=1)
+            newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=1)
             user_cart.save()
             newProduct.save()
-        return redirect('/main/cart')
+        return redirect('/main/cart/' + str(user_id))
 
     def patch(self, request, user_id=0):
         #Checks if user is signed in 
@@ -220,6 +222,9 @@ class CreateCartView(APIView):
     Create a new cart for current user
     """
     def post(self, request):
+        if not request.user.is_authenticated:
+            return redirect('/auth/signin')
+            
         cart = serializer.CartSerializer(data={'buyer':request.user['id']})
         if(cart.is_valid()):
             cart.save()
