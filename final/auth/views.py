@@ -49,23 +49,24 @@ def register(request):
                 messages.error(request, 'Passwords did not match.')
                 return HttpResponseRedirect('register')
 
-            if (User.objects.get(username=username) is not None):
+            try:
+                User.objects.get(username=username)
                 messages.error(request, 'Username already taken.')
                 return HttpResponseRedirect('register')
 
-            # Register user
-            new_user = User.objects.create_user(username=username, password=password, email=email)
-            Profile.objects.create(account_type=account_type,
-                                   user=new_user,
-                                   street_address=street_address,
-                                   city=city, state=state,
-                                   zipcode=zipcode)
-            Cart.objects.create(buyer=new_user,
-                                quantity=0,
-                                total_price=0)
-            
-
-            return HttpResponseRedirect('/auth/signin')
+            except User.DoesNotExist:
+                # Register user
+                new_user = User.objects.create_user(username=username, password=password, email=email)
+                Profile.objects.create(account_type=account_type,
+                                    user=new_user,
+                                    street_address=street_address,
+                                    city=city, state=state,
+                                    zipcode=zipcode)
+                Cart.objects.create(buyer=new_user,
+                                    quantity=0,
+                                    total_price=0)
+                
+                return HttpResponseRedirect('/auth/signin')
 
         # User is not registered if form is invalid
         else:
