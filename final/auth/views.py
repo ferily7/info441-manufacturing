@@ -168,6 +168,12 @@ class PurchaseView(APIView):
             
             new_purchase.products.add(product_object)
         new_purchase.save()
+        
+        cart.delete()
+        Cart.objects.create(buyer=user,
+                            quantity=0,
+                            total_price=0)
+
         return HttpResponseRedirect('/auth/purchases')
 
 class ProfileView(APIView):
