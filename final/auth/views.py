@@ -170,30 +170,6 @@ class PurchaseView(APIView):
         new_purchase.save()
         return HttpResponseRedirect('/auth/purchases')
 
-    # @csrf_exempt
-    # def delete(self, request, format=None, purchase_id=0):
-
-    #     """ Deletes the current purchase """
-    #     try:
-    #         if (not request.user.is_authenticated):
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #         purchase_id = self.kwargs['purchase_id']
-
-    #         # Get the purchase and serialize
-    #         purchase = models.Purchase.objects.get(id=purchase_id)
-            
-    #         # Delete the profile from the database
-    #         purchase.delete()
-
-    #         return Response('Delete successful.',
-    #                         status=status.HTTP_204_NO_CONTENT)
-
-    #     except:
-
-    #         return Response('Bad request.',
-    #                         status=status.HTTP_400_BAD_REQUEST)
-
 class ProfileView(APIView):
 
     @csrf_exempt
@@ -212,43 +188,6 @@ class ProfileView(APIView):
 
         except:
             return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
-
-    # @csrf_exempt
-    # def post(self, request, format=None):
-
-    #     try:
-    #         if (not request.user.is_authenticated):
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #     except:
-    #         return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
-
-
-
-    @csrf_exempt
-    def patch(self, request, format=None, profile_id=0):
-        """ Updates information for the user profile """
-        try:
-            if (not request.user.is_authenticated):
-                return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-            profile_id = self.kwargs['profile_id']
-            user = User.objects.get(id=profile_id)
-
-            profile = models.Profile.objects.get(user=user)
-            profile_serializer = serializers.ProfileSerializer(profile, data=request.data, partial=True)
-
-            if profile_serializer.is_valid():
-                profile_serializer.save()
-                return Response(profile_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
-                            headers={'Content-Type': 'application/json'})
-
-            return Response('Bad request.',
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        except:
-            return Response('Bad request.',
-                            status=status.HTTP_400_BAD_REQUEST)
 
     @csrf_exempt
     def post(self, request, format=None):
