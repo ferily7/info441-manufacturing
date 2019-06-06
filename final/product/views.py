@@ -1,5 +1,7 @@
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib import messages
 from auth.models import Profile
 from . import serializer, models, forms
 from auth.serializers import ProfileSerializer
@@ -21,55 +23,30 @@ class ProductHomePage(APIView):
         
             if (user_serializer['account_type'] == "SE"):
                 isBuyer = False
-		# content = {'user':request.user, 'isBuyer':isBuyer}
-
 
         return render(request, 'product/productHome.html', {'products': allSerializer.data,
-            'user_id': request.user.id, 'isBuyer':isBuyer})
+            'user': request.user, 'isBuyer':isBuyer, 'form': forms.ProductForm()})
+
+    def post(self, request, format=None):
+        """ This creates a new product based on the request"""
+
+        # Checks if the user is logged in
+        if not request.user.is_authenticated:
+            messages.error(request, 'Not logged in')
+            return HttpResponseRedirect('/')
+
+        newProduct = models.Product.objects.create(name=request.data["name"],
+            description=request.data["description"],
+            stock=request.data["stock"],
+            price=request.data["price"],
+            seller=request.user
+        )
+        newProduct.save()
+        messages.success(request, 'Successfully created product')
+        return HttpResponseRedirect('/product')
 
 class ProductView(APIView):
-    def get(self, request, format=None, product_id=0):
-        """ This gets the product based on the given product id """
-
-        if not request.user.is_authenticated:
-            return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
- 
-        # Gets the given product id
-        product_id = self.kwargs['product_id']
-
-        try: 
-            product = models.Product.objects.get(id=product_id)
-        except:
-            return Response("Product ID does not exist", status.HTTP_400_BAD_REQUEST)
-
-        productSerializer = serializer.ProductSerializer(product)
-
-        # return Response(productSerializer.data)
-        return render(request, 'product/product.html', {'product': productSerializer.data})
-
-
-    def patch(self, request, format=None, product_id=0):
-        """ This updates the product's name, description, quantity, or price if the user is the
-        seller of the product """
-
-        if not request.user.is_authenticated:
-            return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
-
-        product = models.Product.objects.get(id=product_id)
-
-        if product.seller != request.user:
-            return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
-        
-        updatedProduct = serializer.ProductSerializer(product, data=request.data, partial=True)
-
-        if updatedProduct.is_valid():
-            updatedProduct.save()
-            return Response(updatedProduct.data, headers = {
-            'content-type': 'application/json'
-            })
-        return Response("Bad request", status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, format=None, product_id=0):
+    def post(self, request, format=None, product_id=0):
         """ This deletes the product based on the given product id """
 
         if not request.user.is_authenticated:
@@ -79,11 +56,15 @@ class ProductView(APIView):
 
         # Checks to see if the user is the seller of the product based on the product id
         if product.seller != request.user:
-            return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
+            messages.error(request, 'Forbidden, not creator of product')
+            return HttpResponseRedirect('/product')
+
+            # return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
 
         # Deletes the product
         product.delete()
-        return Response("Successfully deleted product.", status=status.HTTP_204_NO_CONTENT)
+        messages.success(request, 'Product deleted.')
+        return HttpResponseRedirect('/product')
 
 class ProductTypeView(APIView):
     def get(self, request, format=None):
@@ -151,52 +132,6 @@ class ReviewView(APIView):
         )
         newReview.save()
         return redirect('/product/reviews/' + str(product_id))
-
-        # reviewSerializer = serializer.ReviewSerializer(data=newReview)
-        # if reviewSerializer.is_valid():
-        #     reviewSerializer.save()
-        #     return redirect('product/review.html')
-        # else:
-        #     return Response(reviewSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    # def patch(self, request, format=None, review_id=0):
-    #     """ This updates the review's rating or description if the user is the creator of 
-    #     the review """
-
-    #     if not request.user.is_authenticated:
-    #         return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
-
-    #     review = models.Review.objects.get(id=review_id)
-
-    #     # Checks to see if the user is the person who created the review based on the review id
-    #     if review.reviewer != request.user:
-    #         return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
-        
-    #     # Updates the review based on the given information, the rating number or description
-    #     updatedReview = serializer.ReviewSerializer(review, data=request.data, partial=True)
-
-    #     if updatedReview.is_valid():
-    #         # Update and saves the review
-    #         updatedReview.save()
-    #         return Response(updatedReview.data, headers = {
-    #         'content-type': 'application/json'
-    #     })
-    #     return Response("Bad request", HTTP_400_BAD_REQUEST)
-
-    # def delete(self, request, format=None, review_id=0):
-    #     """ This deletes the review based on the given review id """
-
-    #     if not request.user.is_authenticated:
-    #         return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
-
-    #     review = models.Review.objects.get(id=review_id)
-
-    #     # Checks to see if the user is the person who created the review based on the review id
-    #     if review.reviewer != request.user:
-    #         return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
-
-    #     review.delete()
-    #     return Response("Successfully deleted review.", status=status.HTTP_204_NO_CONTENT)
 
 class BrandView(APIView):
     """

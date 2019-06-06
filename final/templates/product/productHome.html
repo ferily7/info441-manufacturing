@@ -11,24 +11,28 @@
     <div class="container">
         <h4>Product Name: {{product.name}}</h4>
         <p>Description: {{product.description}}</p>
+        <p>Stock: {{product.stock}}</p>
         <p>Price: ${{product.price}}</p>
         <p>Product Type: {{product.product_type.name}}</p>
         <p>Brand: {{product.brand.name}}</p>
         <p>Seller: {{product.seller.username}}</p>
 
         <div class="row">
-            <form method="POST", action="../main/cart/{{ user_id }}">
+            <form method="POST", action="../main/cart/{{ user.id }}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success" id="btn-product" name="add">Add To Cart</button>
                 <input type="hidden" name='product_id' value='{{ product.id }}'>
             </form>
             
-            <form method="GET", action="">
-                <button type="submit" class="btn btn-danger" id="btn-product" name="add">Delete</button>
-            </form>
+            {% if user.is_authenticated %}
+                <form method="POST", action="../product/{{ product.id }}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" id="btn-product" name="add">Delete</button>
+                </form>
+            {% endif %}
 
-            <form method="GET", action="reviews/{{product.id}}">
-                <button type="submit" class="btn btn-info" id="btn-product" name="add">Review</button>
+            <form method="GET", action="reviews/{{ product.id }}">
+                <button type="submit" class="btn btn-info" id="btn-product" name="add">Reviews</button>
             </form>
 
             <form method="GET", action="../main/spec/{{ product.id }}">
@@ -39,5 +43,16 @@
     <hr/>
 
 {% endfor %}
+
+{% if not isBuyer %}
+    <h1>Add New Product</h1>
+
+    <form method='POST' action='/product/'>
+        {% csrf_token %}
+        {{form.as_ul}}
+        <button type="submit" class="btn btn-success" name="add">Add Product</button>
+    </form>
+    <hr/>
+{% endif %}
 
 {% endblock %}
