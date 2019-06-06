@@ -153,7 +153,9 @@ class CartView(APIView):
             newProduct.save()
         else:
             user_cart.products.add(product)
+            newProduct = models.ProductCart(cart_id=user_cart['id'], product_id=product_id, quantity=1)
             user_cart.save()
+            newProduct.save()
         return redirect('/main/cart')
 
     def patch(self, request, user_id=0):
