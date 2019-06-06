@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from auth.models import Profile
 from . import serializer, models, forms
+from auth.serializers import ProfileSerializer
 
-#Import APIview for viewsets API interface
+# Import APIview for viewsets API interface
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -11,8 +13,19 @@ class ProductHomePage(APIView):
     def get(self, request, format=None):
         allProducts = models.Product.objects.all()
         allSerializer = serializer.ProductSerializer(allProducts, many=True)
+        isBuyer = True
 
-        return render(request, 'product/productHome.html', {'products': allSerializer.data, 'user_id': request.user.id})
+        if request.user.is_authenticated:
+            user = Profile.objects.get(user=request.user.id)
+            user_serializer = ProfileSerializer(user).data
+        
+            if (user_serializer['account_type'] == "SE"):
+                isBuyer = False
+		# content = {'user':request.user, 'isBuyer':isBuyer}
+
+
+        return render(request, 'product/productHome.html', {'products': allSerializer.data,
+            'user_id': request.user.id, 'isBuyer':isBuyer})
 
 class ProductView(APIView):
     def get(self, request, format=None, product_id=0):
@@ -110,10 +123,6 @@ class ReviewView(APIView):
     def get(self, request, format=None, product_id=0):
         """ This gets all the reviews of the product based on the given product id """
 
-        # Checks if the user is logged in
-        if not request.user.is_authenticated:
-            return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
- 
         # Gets the given product id
         product_id = self.kwargs['product_id']
 
@@ -125,7 +134,7 @@ class ReviewView(APIView):
         reviewSerializer = serializer.ReviewSerializer(allReviews, many=True)
 
         return render(request, 'product/review.html', {'review': reviewSerializer.data,
-            'form':forms.ReviewForm(), 'product_id':product_id})
+            'form': forms.ReviewForm(), 'product_id': product_id, 'user': request.user})
 
     def post(self, request, format=None, product_id=0):
         """ This gets the review the user submitted and saves the review to the given product id """
@@ -135,7 +144,11 @@ class ReviewView(APIView):
             return Response("Not logged in", status.HTTP_401_UNAUTHORIZED)
 
         product = models.Product.objects.get(id=product_id)
-        newReview = models.Review.objects.create(reviewer=request.user,product=product,rating=request.data["rating"],description=request.data["description"])
+        newReview = models.Review.objects.create(reviewer=request.user,
+            product=product,
+            rating=request.data["rating"],
+            description=request.data["description"]
+        )
         newReview.save()
         return redirect('/product/reviews/' + str(product_id))
 
@@ -204,12 +217,16 @@ class BrandView(APIView):
         brands = models.Brand.objects.all()
         serialized_brands = serializer.BrandSerializer(brands, many=True).data
 
-        return render(request, 
-            'product/brand.html', 
-                {'brand_list':serialized_brands, 
-                'form':forms.BrandForm()
-                }
-            )
+        isBuyer = True
+
+        user = Profile.objects.get(user=request.user.id)
+        user_serializer = ProfileSerializer(user).data
+        
+        if (user_serializer['account_type'] == "SE"):
+            isBuyer = False
+
+        return render(request, 'product/brand.html', {'brand_list':serialized_brands, 
+            'form':forms.BrandForm(), 'isBuyer': isBuyer})
 
     def post(self, request):
         #Checks if user is signed in 

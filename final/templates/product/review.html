@@ -14,12 +14,16 @@
     <br>
 {% endfor %}
 
-<h3>Write a Review</h3>
+<hr/>
 
-<form action='/product/reviews/{{product_id}}' method='POST'>
-    {% csrf_token %}
-    {{form.as_ul}}
-    <input type='submit' value='Submit'>
-</form>
+{% if user.is_authenticated %}
+    <h3>Write a Review</h3>
+
+    <form action='/product/reviews/{{product_id}}' method='POST'>
+        {% csrf_token %}
+        {{form.as_ul}}
+        <input type='submit' value='Submit'>
+    </form>
+{% endif %}
 
 {% endblock %}
