@@ -24,8 +24,6 @@ class RegistrationForm(forms.Form):
     city = forms.CharField(label='City', max_length=50, required=True)
     state = forms.CharField(label='State', max_length=50, required=True)
     zipcode = forms.IntegerField(label='Zipcode', min_value=0, required=True)
-    
-
 
 class SignInForm(forms.Form):
 

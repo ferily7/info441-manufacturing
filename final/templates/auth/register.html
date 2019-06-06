@@ -6,8 +6,8 @@
 
     <form action='/auth/register' method='post'>
         {% csrf_token %}
-        {{form}}
-        <input type='submit' text='Submit'>
+        {{form.as_ul}}
+        <input type='submit' text='Submit' value='Register'>
     </form>
 
 {% endblock %}

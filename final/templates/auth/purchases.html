@@ -4,14 +4,15 @@
 
 {% block content %}
 
-{% for purchase in purchases %}
-
 <h1>Purchase History</h1>
 
-<h2>{{purchase.product.name}}</h2>
-
+{% for purchase in purchases %}
+    {% for product in purchase.products %}
+        <h2>{{product.name}}</h2>
+    {% endfor %}
 <p>Total Items: {{purchase.total_items}}</p>
 <p>Total Price: {{purchase.total_price}}</p>
+<br>
 {% endfor %}
 
 {% endblock %}

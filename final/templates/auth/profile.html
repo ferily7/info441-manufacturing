@@ -16,4 +16,9 @@
 <p>State: {{profile.state}}</p>
 <p>Zipcode: {{profile.zipcode}}</p>
 
+<form method='POST', action='../auth/profile'>
+    {% csrf_token %}
+    <button type='submit' class='btn btn-info' name='delete'>Delete Account</button>
+</form>
+
 {% endblock %}

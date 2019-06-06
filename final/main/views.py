@@ -58,6 +58,7 @@ class BrandView(APIView):
         newest_brand.delete()
 
         return Response("Latest brand successfully deleted.")
+        
 class CartView(APIView):
     """
     GET:
