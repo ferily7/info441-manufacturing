@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response 
 from rest_framework import status
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
 
 from . import models, serializer, forms
 from product.serializer import ProductSerializer
@@ -194,7 +195,8 @@ class CartView(APIView):
         user_cart.products.remove(product)
         user_cart.save()
 
-        return Response("Product successfully deleted.")
+        messages.success(request, 'Item has been removed.')
+        return redirect('/main/cart/' + user_id)
 
 class SpecDocView(APIView):
     """
