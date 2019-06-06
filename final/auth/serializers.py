@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-# from product.serializer import ProductSerializer
 from . import models
 from product.models import ProductType
 

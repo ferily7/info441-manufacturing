@@ -161,103 +161,39 @@ class PurchaseView(APIView):
         new_purchase = Purchase.objects.create(user_id=user,
                                 # products=cart_serializer['products'],
                                 total_price=cart_serializer['total_price'],
-                                total_items=1)
+                                total_items=cart_serializer['quantity'])
         for product in cart_serializer['products']:
-            print(product)
-            # print(product.data)
             # product_serializer = ProductSerializer(product)
             product_object = Product.objects.get(name=product['name'])
             
             new_purchase.products.add(product_object)
         new_purchase.save()
+        
+        cart.delete()
+        Cart.objects.create(buyer=user,
+                            quantity=0,
+                            total_price=0)
+
         return HttpResponseRedirect('/auth/purchases')
-
-    # @csrf_exempt
-    # def delete(self, request, format=None, purchase_id=0):
-
-    #     """ Deletes the current purchase """
-    #     try:
-    #         if (not request.user.is_authenticated):
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #         purchase_id = self.kwargs['purchase_id']
-
-    #         # Get the purchase and serialize
-    #         purchase = models.Purchase.objects.get(id=purchase_id)
-            
-    #         # Delete the profile from the database
-    #         purchase.delete()
-
-    #         return Response('Delete successful.',
-    #                         status=status.HTTP_204_NO_CONTENT)
-
-    #     except:
-
-    #         return Response('Bad request.',
-    #                         status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileView(APIView):
 
     @csrf_exempt
     def get(self, request, format=None):
-    # def get(self, request, format=None, profile_id=0):
-
         """ Displays additional information for a user profile """
         try:
             if (not request.user.is_authenticated):
                 return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
 
-            # profile_id = self.kwargs['profile_id']
 
             user = User.objects.get(id=request.user.id)
-
             profile = models.Profile.objects.get(user=user)
             profile_serializer = serializers.ProfileSerializer(profile).data
 
             return render(request, 'auth/profile.html', {'profile': profile_serializer})
-            # return Response(profile_serializer.data, status=status.HTTP_200_OK)
 
         except:
             return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
-
-    # @csrf_exempt
-    # def post(self, request, format=None):
-
-    #     try:
-    #         if (not request.user.is_authenticated):
-    #             return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-    #     except:
-    #         return Response('Bad request.', status=status.HTTP_400_BAD_REQUEST)
-
-
-
-    @csrf_exempt
-    def patch(self, request, format=None, profile_id=0):
-
-        """ Updates information for the user profile """
-
-        try:
-            if (not request.user.is_authenticated):
-                return Response('User is not authenticated.', status=status.HTTP_401_UNAUTHORIZED)
-
-            profile_id = self.kwargs['profile_id']
-            user = User.objects.get(id=profile_id)
-
-            profile = models.Profile.objects.get(user=user)
-            profile_serializer = serializers.ProfileSerializer(profile, data=request.data, partial=True)
-
-            if profile_serializer.is_valid():
-                profile_serializer.save()
-                return Response(profile_serializer.data, status=status.HTTP_206_PARTIAL_CONTENT,
-                            headers={'Content-Type': 'application/json'})
-
-            return Response('Bad request.',
-                            status=status.HTTP_400_BAD_REQUEST)
-
-        except:
-            return Response('Bad request.',
-                            status=status.HTTP_400_BAD_REQUEST)
 
     @csrf_exempt
     def post(self, request, format=None):
