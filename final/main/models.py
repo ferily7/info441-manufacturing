@@ -22,6 +22,23 @@ class Cart(models.Model):
         obj.added_by = request.user
         super().save_model(request, obj, form, change)
 
+class ProductCart(models.Model):
+    cart_id = models.ForeignKey(
+        Cart,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name='CartID'
+    )
+    product_id = models.ForeignKey(
+        Product,
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name='ProductID'
+    )
+    quantity = models.PositiveSmallIntegerField(blank=True)
+
 class SpecDoc(models.Model):
     MANUFACTURER = 'MN'
     SELLER = 'SL'
