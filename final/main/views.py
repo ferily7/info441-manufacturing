@@ -12,55 +12,6 @@ from . import models, serializer, forms
 from product.serializer import ProductSerializer
 from product.models import Product
 
-class BrandView(APIView):
-    """
-    GET:
-    Returns page with all current brands and a brand registration form
-
-    POST:
-    Creates a new brand instance
-
-    DELETE:
-    Deletes the latest brand
-    """
-    def get(self, request, format=None):
-        #Checks if user is signed in 
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        brands = models.Brand.objects.all()
-        serialized_brands = serializer.BrandSerializer(brands, many=True).data
-
-        return render(request, 
-            'main/brand.html', 
-                {'brand_list':serialized_brands, 
-                'form':forms.BrandForm()
-                }
-            )
-
-    def post(self, request):
-        #Checks if user is signed in 
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        serialized_brand = serializer.BrandSerializer(data=request.data)
-
-        if serialized_brand.is_valid():
-            serialized_brand.save()
-            return redirect('/main/brand/')
-        else:
-            return Response(serialized_brand.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request):
-        #Checks if user is signed in 
-        if not request.user.is_authenticated:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
-
-        newest_brand = models.Brand.objects.latest('id')
-        newest_brand.delete()
-
-        return Response("Latest brand successfully deleted.")
-        
 class CartView(APIView):
     """
     GET:
@@ -160,7 +111,7 @@ class CartView(APIView):
             newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=1)
             user_cart.save()
             newProduct.save()
-        return redirect('/main/cart/' + str)
+        return redirect('/main/cart/' + str(user_id))
 
     def patch(self, request, user_id=0):
         #Checks if user is signed in 

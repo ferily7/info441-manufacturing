@@ -4,24 +4,40 @@
 
 {% block content %}
 
-<h1> This is the Product page. </h1>
-<br>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
 
 {% for product in products %}
-    <form method="POST", action="../main/cart/{{ user_id }}">
-        {% csrf_token %}
+    <div class="container">
         <h4>Product Name: {{product.name}}</h4>
         <p>Description: {{product.description}}</p>
-        <!-- <p>Quantity: {{product.quantity}}</p> -->
         <p>Price: ${{product.price}}</p>
         <p>Product Type: {{product.product_type.name}}</p>
+        <p>Brand: {{product.brand.name}}</p>
         <p>Seller: {{product.seller.username}}</p>
-        
-        <button type="submit" class="btn btn-info" name="add">Add To Cart</button>
-        <input type="hidden" name='product_id' value='{{ product.id }}'>
-     </form>
-    <br>
-    <br>
+
+        <div class="row">
+            <form method="POST", action="../main/cart/{{ user_id }}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success" id="btn-product" name="add">Add To Cart</button>
+                <input type="hidden" name='product_id' value='{{ product.id }}'>
+            </form>
+            
+            <form method="GET", action="">
+                <button type="submit" class="btn btn-danger" id="btn-product" name="add">Delete</button>
+            </form>
+
+            <form method="GET", action="reviews/{{product.id}}">
+                <button type="submit" class="btn btn-info" id="btn-product" name="add">Review</button>
+            </form>
+
+            <form method="GET", action="../main/spec/{{ product.id }}">
+                <button type="submit" class="btn btn-warning" name="add">Spec</button>
+            </form>
+        </div>
+    </div>   
+    <hr/>
+
 {% endfor %}
 
 {% endblock %}

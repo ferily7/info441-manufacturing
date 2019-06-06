@@ -4,18 +4,6 @@ from product.serializer import ProductSerializer
 from product.models import Product
 from . import models
 
-class BrandSerializer(serializers.ModelSerializer):
-    class Meta: 
-        model = models.Brand
-        fields = (
-            "id",
-            "name",
-            "description"
-        )
-        read_only_fields = (
-            "id",
-        )
-
 class CartSerializer(serializers.ModelSerializer):
     products = ProductSerializer(many=True)
     buyer = UserSerializer()

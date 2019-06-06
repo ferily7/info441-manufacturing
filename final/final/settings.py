@@ -30,7 +30,6 @@ ALLOWED_HOSTS = [
     'info441.azurewebsites.net', # Name of website when deploy on Azure
 	'127.0.0.1']
 
-
 # Application definition
 
 INSTALLED_APPS = [
