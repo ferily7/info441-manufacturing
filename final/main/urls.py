@@ -6,8 +6,6 @@ from django.urls import path
 from django.conf.urls import include
 
 urlpatterns = [
-    url(r'^brand', 
-        views.BrandView.as_view(), name='brand'),
     path('cart/<int:user_id>', 
         views.CartView.as_view(), name='cart'),
     path('spec/<int:spec_id>', 

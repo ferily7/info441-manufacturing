@@ -3,8 +3,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib import messages
 
-
-
 def homepage(request):
 	content = {}
 	if request.user.is_authenticated:

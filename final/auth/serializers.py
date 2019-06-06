@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from . import models
 from product.models import ProductType
 
-
-
 class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -38,7 +36,6 @@ class ProductSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "description",
-            "quantity",
             "stock",
             "price",
             "product_type",
