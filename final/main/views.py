@@ -56,7 +56,7 @@ class CartView(APIView):
         total_items = 0
         for product in products:
             product['num'] = cart_contents_serialized[index]['quantity']
-            product['total_price'] = product['price'] * product['num']
+            product['total_price'] = format(float(product['price']) * float(product['num']), '.2f')
             index += 1
             total_items += product['num']
 
@@ -106,11 +106,12 @@ class CartView(APIView):
 
         product_id = request.POST.get('product_id')
         product = Product.objects.get(id=product_id)
-        serialized_product = ProductSerializer(product)
+        serialized_product = ProductSerializer(product).data
+
 
         if(serialized_product in products):
             currProduct = models.ProductCart.objects.get(cart_id=user_cart, product_id=product)
-            quantity = currProduct['quantity'] + 1
+            quantity = currProduct.quantity + 1
             newProduct = models.ProductCart(cart_id=user_cart, product_id=product, quantity=quantity)
             currProduct.delete()
             newProduct.save()
@@ -177,7 +178,8 @@ class SpecDocView(APIView):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
         spec_id = self.kwargs['spec_id']
-        spec = models.SpecDoc.objects.get(id=spec_id)
+        product = Product.objects.get(id=spec_id)
+        spec = models.SpecDoc.objects.get(product=product)
 
         serialized_spec = serializer.SpecDocSerializer(spec).data
 
