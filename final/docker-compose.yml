@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   info441-manufacturing:
-    image: info441final.azurecr.io/final:latest # Container Registry link then docker container name
+    image: compart.azurecr.io/final:latest # Container Registry link then docker container name
     build: .
     ports:
       - 8000:8000
