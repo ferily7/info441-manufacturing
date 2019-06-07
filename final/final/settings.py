@@ -86,26 +86,26 @@ STATICFILES_DIRS = [
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-
 # DATABASES = {
-#      'default': {
-#          'ENGINE': 'sql_server.pyodbc',
-#          'NAME': '<db-name>',
-#          'USER': '<username>,
-#          'PASSWORD': '<pswd>',
-#          'HOST': 'compart.database.windows.net',
-#          'PORT': '1433',
-#          'OPTIONS': {
-#              'driver': 'ODBC Driver 13 for SQL Server'
-#          }
-#      }
-#  }
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
+DATABASES = {
+     'default': {
+         'ENGINE': 'sql_server.pyodbc',
+         'NAME': 'compartDB',
+         'USER': 'ferily',
+         'PASSWORD': 'info441compartDB',
+         'HOST': 'compart.database.windows.net',
+         'PORT': '1433',
+         'OPTIONS': {
+             'driver': 'ODBC Driver 13 for SQL Server'
+         }
+     }
+ }
 
 
 # Password validation

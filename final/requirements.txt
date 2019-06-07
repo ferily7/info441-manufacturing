@@ -1,5 +1,7 @@
-Django==2.2
+Django==2.1.8
 django-extensions==2.1.6
 djangorestframework==3.9.2
 pytz==2019.1
 sqlparse==0.3.0
+django-pyodbc-azure==2.1.0.0
+pyodbc===4.0.26
