@@ -27,7 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    'info441.azurewebsites.net', # Name of website when deploy on Azure
+    'afk-compart.azurewebsites.net', # Name of website when deploy on Azure
 	'127.0.0.1']
 
 # Application definition
