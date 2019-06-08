@@ -9,6 +9,10 @@ class BrandForm(forms.Form):
     name = forms.CharField(label='Brand name', max_length=22)
     description = forms.CharField(widget=forms.Textarea, max_length=250)
 
+class ProductTypeForm(forms.Form):
+    name = forms.CharField(label='Product Type name', max_length=100)
+    description = forms.CharField(widget=forms.Textarea, max_length=250)
+
 class ProductForm(forms.Form):
     name = forms.CharField(label='Product name', max_length=22)
     description = forms.CharField(widget=forms.Textarea, max_length=250)

@@ -12,4 +12,16 @@
     <br>
 {% endfor %}
 
+<hr/>
+
+{% if not isBuyer %}
+    <h1>Register a new product type</h1>
+    <form action='/product/product_type/' method='POST'>
+        {% csrf_token %}
+        {{form.as_ul}}
+        <input type='submit' value='Submit'>
+    </form>
+    <hr/>
+{% endif %}
+
 {% endblock %}
