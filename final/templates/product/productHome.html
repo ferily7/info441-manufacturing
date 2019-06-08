@@ -25,10 +25,12 @@
             </form>
             
             {% if user.is_authenticated %}
-                <form method="POST", action="../product/{{ product.id }}">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger" id="btn-product" name="add">Delete</button>
-                </form>
+                {% if product.seller.username == user.username %}
+                    <form method="POST", action="../product/{{ product.id }}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger" id="btn-product" name="add">Delete</button>
+                    </form>
+                {% endif %}
             {% endif %}
 
             <form method="GET", action="reviews/{{ product.id }}">

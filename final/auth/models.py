@@ -8,7 +8,7 @@ class Profile(models.Model):
     street_address = models.CharField(max_length=100, default='123 University Way')
     city = models.CharField(max_length=50, default='Seattle')
     state = models.CharField(max_length=50, default='WA')
-    zipcode = models.PositiveSmallIntegerField(default='98105')
+    zipcode = models.PositiveIntegerField(default='98105')
 
 
 class Purchase(models.Model):
