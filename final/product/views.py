@@ -59,8 +59,6 @@ class ProductView(APIView):
             messages.error(request, 'Forbidden, not creator of product')
             return HttpResponseRedirect('/product')
 
-            # return Response("Forbidden, not creator of review", status.HTTP_403_FORBIDDEN)
-
         # Deletes the product
         product.delete()
         messages.success(request, 'Product deleted.')

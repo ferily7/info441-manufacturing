@@ -65,7 +65,6 @@ class SpecDoc(models.Model):
         on_delete=models.SET_NULL, 
         related_name='product')
     content = models.TextField(max_length=1000, blank=True)
-    editedBy = models.DateTimeField(auto_now=True)
 
     def save_model(self, request, obj, form, change):
         obj.added_by = request.user

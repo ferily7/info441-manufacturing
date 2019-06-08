@@ -35,7 +35,6 @@ class SpecDocSerializer(serializers.ModelSerializer):
             "creator_type",
             "product",
             "content",
-            "editedBy"
         )
 
         read_only_fields = (
