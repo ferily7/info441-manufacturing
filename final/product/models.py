@@ -19,7 +19,8 @@ class Product(models.Model):
     description = models.CharField(max_length=250, blank=True)
     stock = models.PositiveSmallIntegerField()
     price = models.DecimalField(max_digits=7, decimal_places=2)
-    product_type = models.ManyToManyField(ProductType, related_name="product_type", blank=True)
+    product_type = models.ForeignKey(ProductType,
+        null=True, blank=True, on_delete=models.SET_NULL, related_name="product_type")
     brand = models.ForeignKey(Brand, 
         null=True, blank=True, on_delete=models.SET_NULL, related_name="brand")
     seller = models.ForeignKey(User, 
